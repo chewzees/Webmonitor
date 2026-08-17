@@ -1,0 +1,14 @@
+{
+  "name": "webmonitor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WebMonitor — PHP + MySQL website monitoring platform",
+  "scripts": {
+    "dev": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend && node scripts/deploy-frontend.mjs",
+    "deploy:frontend": "node scripts/deploy-frontend.mjs",
+    "seed": "C:\\xampp\\php\\php.exe cli/seed.php",
+    "monitor": "C:\\xampp\\php\\php.exe cli/monitor.php",
+    "retention": "C:\\xampp\\php\\php.exe cli/retention.php"
+  }
+}

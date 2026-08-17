@@ -1,0 +1,23 @@
+RewriteEngine On
+RewriteBase /Webmonitor/
+
+# Collapse /Webmonitor//... → /Webmonitor/...
+RewriteCond %{REQUEST_URI} ^(/Webmonitor)/{2,}(.*)$ [NC]
+RewriteRule . %1/%2 [R=301,L]
+
+# Add trailing slash for app root only
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} ^/Webmonitor$ [NC]
+RewriteRule ^ /Webmonitor/ [R=301,L]
+
+# Pretty aliases
+RewriteRule ^$ index.php [L]
+RewriteRule ^login/?$ login.php [L,QSA]
+RewriteRule ^status/?$ status.php [L,QSA]
+RewriteRule ^dashboard/?$ dashboard.php [L,QSA]
+RewriteRule ^health/?$ health.php [L,QSA]
+
+# Serve real files/dirs
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]

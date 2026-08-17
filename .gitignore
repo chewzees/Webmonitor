@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+api/.env
+backend/.env
+*.log
+.DS_Store
+coverage/
+.turbo/
+.vite/
+*.tsbuildinfo
+.idea/
+.vscode/
+*.zip

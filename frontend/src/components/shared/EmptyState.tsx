@@ -1,0 +1,61 @@
+import { AlertCircle, Inbox, type LucideIcon } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/cn'
+
+interface EmptyStateProps {
+  icon?: LucideIcon
+  title: string
+  description?: string
+  action?: { label: string; onClick: () => void }
+  className?: string
+}
+
+export function EmptyState({
+  icon: Icon = Inbox,
+  title,
+  description,
+  action,
+  className,
+}: EmptyStateProps) {
+  return (
+    <div className={cn('flex flex-col items-center justify-center rounded-xl border border-dashed px-6 py-16 text-center', className)}>
+      <div className="mb-4 rounded-full bg-muted p-3 text-muted-foreground">
+        <Icon className="h-6 w-6" />
+      </div>
+      <h3 className="text-base font-semibold">{title}</h3>
+      {description ? <p className="mt-1 max-w-sm text-sm text-muted-foreground">{description}</p> : null}
+      {action ? (
+        <Button className="mt-4" onClick={action.onClick}>
+          {action.label}
+        </Button>
+      ) : null}
+    </div>
+  )
+}
+
+interface ErrorStateProps {
+  title?: string
+  message?: string
+  onRetry?: () => void
+  className?: string
+}
+
+export function ErrorState({
+  title = 'Something went wrong',
+  message = 'We could not load this data. Please try again.',
+  onRetry,
+  className,
+}: ErrorStateProps) {
+  return (
+    <div className={cn('flex flex-col items-center justify-center rounded-xl border border-destructive/30 bg-destructive/5 px-6 py-12 text-center', className)}>
+      <AlertCircle className="mb-3 h-8 w-8 text-destructive" />
+      <h3 className="text-base font-semibold">{title}</h3>
+      <p className="mt-1 max-w-md text-sm text-muted-foreground">{message}</p>
+      {onRetry ? (
+        <Button variant="outline" className="mt-4" onClick={onRetry}>
+          Try again
+        </Button>
+      ) : null}
+    </div>
+  )
+}

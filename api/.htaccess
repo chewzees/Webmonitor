@@ -1,0 +1,14 @@
+RewriteEngine On
+
+# Deny sensitive files
+<FilesMatch "^\.env">
+  Require all denied
+</FilesMatch>
+
+# Pass Authorization header if present
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Route everything to front controller
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]

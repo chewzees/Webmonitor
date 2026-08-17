@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+}
+
+enum MonitorStatus {
+  UP
+  DOWN
+  UNKNOWN
+  DEGRADED
+}
+
+enum HttpMethod {
+  GET
+  HEAD
+  POST
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  name         String
+  role         Role       @default(ADMIN)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  auditLogs    AuditLog[]
+}
+
+model Website {
+  id              String        @id @default(cuid())
+  name            String
+  url             String
+  slug            String        @unique
+  description     String?
+  method          HttpMethod    @default(GET)
+  intervalSeconds Int           @default(60)
+  timeoutMs       Int           @default(10000)
+  expectedStatus  Int           @default(200)
+  keyword         String?
+  headersJson     String?
+  isActive        Boolean       @default(true)
+  isPublic        Boolean       @default(true)
+  currentStatus   MonitorStatus @default(UNKNOWN)
+  lastCheckedAt   DateTime?
+  lastResponseMs  Int?
+  lastStatusCode  Int?
+  lastError       String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  logs            MonitorLog[]
+  incidents       Incident[]
+
+  @@index([isActive, lastCheckedAt])
+  @@index([currentStatus])
+  @@index([name])
+}
+
+model MonitorLog {
+  id           String        @id @default(cuid())
+  websiteId    String
+  website      Website       @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  status       MonitorStatus
+  statusCode   Int?
+  responseMs   Int?
+  errorMessage String?
+  checkedAt    DateTime      @default(now())
+
+  @@index([websiteId, checkedAt])
+  @@index([checkedAt])
+  @@index([status])
+}
+
+model Incident {
+  id         String        @id @default(cuid())
+  websiteId  String
+  website    Website       @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  status     MonitorStatus
+  startedAt  DateTime      @default(now())
+  resolvedAt DateTime?
+  summary    String?
+
+  @@index([websiteId, startedAt])
+}
+
+model TelegramSettings {
+  id           String   @id @default(cuid())
+  botToken     String   @default("")
+  chatId       String   @default("")
+  enabled      Boolean  @default(false)
+  notifyOnDown Boolean  @default(true)
+  notifyOnUp   Boolean  @default(true)
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action     String
+  entityType String?
+  entityId   String?
+  metadata   String?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([userId])
+  @@index([entityType, entityId])
+}
+
+model Session {
+  sid    String   @id
+  sess   Json
+  expire DateTime
+
+  @@index([expire])
+  @@map("session")
+}
