@@ -36,40 +36,70 @@ Simple uptime monitor — **HTML, CSS, JavaScript, PHP, MySQL only**.
 
 ![Settings](docs/screenshots/08-settings.png)
 
-### Status site
+---
 
-![Status site](docs/screenshots/09-status-site.png)
+## What you need
 
-## Setup (XAMPP or shared hosting)
+- XAMPP (Apache + MySQL + PHP)
+- PHP CLI for the seed script (`php`)
 
-1. Create a MySQL database and user.
-2. Edit `api/.env`:
+## Step-by-step setup
+
+1. Install XAMPP and start **Apache** and **MySQL**.
+2. Clone into `htdocs`:
+   ```bash
+   cd C:\xampp\htdocs
+   git clone https://github.com/chewzees/Webmonitor.git
+   ```
+3. Create a MySQL database named `webmonitor` (phpMyAdmin → New).
+4. Import `database/schema.sql` into that database.
+5. Copy settings into `api/.env` (create it if missing):
 
 ```env
-DB_HOST=localhost
+DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_NAME=your_db
-DB_USER=your_user
-DB_PASS=your_password
-APP_URL=https://your-domain.com/Webmonitor
-COOKIE_SECURE=true
+DB_NAME=webmonitor
+DB_USER=root
+DB_PASS=
+APP_URL=http://localhost/Webmonitor
+COOKIE_SECURE=false
+ADMIN_EMAIL=admin@webmonitor.local
+ADMIN_PASSWORD=ChangeMe123!
 ```
 
-3. Import `database/schema.sql` in phpMyAdmin.
-4. Seed users:
+If the folder is nested, set `APP_URL` to the real path, for example  
+`http://localhost/everything that work/Webmonitor`
 
-```bash
-php cli/seed.php
-```
+6. Seed demo users:
+   ```bash
+   cd C:\xampp\htdocs\Webmonitor
+   php cli/seed.php
+   ```
+7. Open:
+   `http://localhost/Webmonitor/login.php`
 
-5. Open `/Webmonitor/login.php`  
-   Admin: `admin@webmonitor.local` / `ChangeMe123!`
+## Step-by-step usage
 
-6. Optional cron (every minute):
+1. On login, click **Autofill Admin** or enter `admin@webmonitor.local` / `ChangeMe123!`.
+2. Click **Sign in**.
+3. On **Dashboard**, run checks and read uptime/latency.
+4. Open **Websites** → **Add** (`website-form.php`), enter a URL and interval, save.
+5. Open **Logs** for check history.
+6. Open **Settings** for account/app options.
+7. Share **status.php** as the public status page (no login).
+8. Read **manual.php** for the in-app guide.
+9. Optional cron every minute:
+   ```bash
+   php C:\xampp\htdocs\Webmonitor\cli\monitor.php
+   ```
 
-```bash
-php /path/to/Webmonitor/cli/monitor.php
-```
+Demo user: `user@webmonitor.local` / `User123!`
+
+## If something goes wrong
+
+- **Database is not connected:** `api/.env` path/credentials, and MySQL must be running.
+- **Redirects to `/Webmonitor` 404:** set `APP_URL` to the folder you actually opened.
+- Node / React under `frontend/` and `backend/` are **not** required.
 
 ## Pages
 
@@ -80,15 +110,3 @@ php /path/to/Webmonitor/cli/monitor.php
 | `websites.php` | Manage monitors |
 | `status.php` | Public status page |
 | `health.php` | JSON DB health |
-| `db-check.php?key=setup` | Temporary DB debugger (delete after setup) |
-
-## Folders
-
-- `lib/` — Env, DB, Auth, Monitor helpers
-- `includes/` — bootstrap + layout
-- `assets/` — CSS + JS
-- `cli/` — seed + monitor cron
-- `database/` — SQL schema
-- `portal/` — optional links portal (separate)
-
-Node / React / Prisma under `frontend/` and `backend/` are **not required** to run this app.
