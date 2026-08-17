@@ -4,37 +4,7 @@ Simple uptime monitor — **HTML, CSS, JavaScript, PHP, MySQL only**.
 
 ## Screenshots
 
-### Sign in
-
-![Login](docs/screenshots/01-login.png)
-
-### User manual
-
-![Manual](docs/screenshots/02-manual.png)
-
-### Public status
-
-![Public status](docs/screenshots/03-public-status.png)
-
-### Dashboard
-
 ![Dashboard](docs/screenshots/04-dashboard.png)
-
-### Websites
-
-![Websites](docs/screenshots/05-websites.png)
-
-### Add website
-
-![Website form](docs/screenshots/06-website-form.png)
-
-### Logs
-
-![Logs](docs/screenshots/07-logs.png)
-
-### Settings
-
-![Settings](docs/screenshots/08-settings.png)
 
 ---
 
